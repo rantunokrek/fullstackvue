@@ -1,0 +1,4 @@
+//composer create-project --prefer-dist laravel/laravel:^7.0
+// composer require laravel/ui:^2.4
+ // php artisan make:controller TestController
+ // npm i vue-router@3.1.6

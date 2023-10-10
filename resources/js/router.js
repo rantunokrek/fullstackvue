@@ -2,12 +2,12 @@
 import Router from 'vue-router'
 import Vue from 'vue'
 Vue.use(Router)
-import firstPage from './components/pages/FirstPage'
+import AdminHome from './components/pages/AdminHome'
 const routes = [
 
     {
-        path: '/firstPage',
-        component: firstPage,
+        path: '/',
+        component: AdminHome,
 
     },
 ]
