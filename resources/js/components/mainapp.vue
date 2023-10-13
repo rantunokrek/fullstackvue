@@ -25,10 +25,10 @@
               </li>
 
 
-              <li><router-link to="tags">
+              <li><router-link :to="{ name: 'tag-url' }">
                   <Icon type="ios-speedometer" /> Tags
                 </router-link></li>
-              <li><router-link to="category">
+              <li><router-link :to="{ name: 'category-url' }">
                   <Icon type="ios-speedometer" /> Category
                 </router-link></li>
               <li><router-link to="adminusers">

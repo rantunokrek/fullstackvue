@@ -21,3 +21,5 @@ Route::any('/{slug}', function () {
 });
 
 Route::get('/test', 'TestController@test');
+Route::post('app/create_tag', 'TagController@create_tag');
+Route::get('app/get_tags', 'TagController@get_tag');
