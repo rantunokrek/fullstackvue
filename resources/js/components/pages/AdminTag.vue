@@ -28,9 +28,11 @@
                                 <td class="">{{ tag.created_at }}</td>
 
                                 <td>
-                                    <button class="_btn _action_btn view_btn1" type="button">View</button>
 
-                                    <button class="_btn _action_btn make_btn1" type="button">Delete</button>
+                                    <Button type="info" size="small" @click="showEditData(tag, i)"> Edit </Button>
+
+                                    <Button type="error" size="small" @click="showDeletingModal(tag, i)"
+                                        :loading="tag.isDeleting">Delete</Button>
                                 </td>
                             </tr>
                             <!-- ITEMS -->
@@ -42,8 +44,9 @@
                         </table>
                     </div>
                 </div>
-                <Modal v-model="addModal" title="Add Tag" @on-ok="ok" @on-cncel="cancel">
-                    <Input type="text" v-model="data.tagName" placeholder="add Your tag" />
+                <!-- add model modal -->
+                <Modal v-model="addModal" title="Add Tag" :mask-closable="false" :closable="false">
+                    <Input type="text" v-model="data.tagName" placeholder="add Your tag" filed="required" />
 
                     <div slot="footer">
                         <Button type="default" @click="addModal = false">Close</Button>
@@ -52,6 +55,40 @@
                     </div>
 
                 </Modal>
+
+
+                <!-- Edit model modal -->
+                <Modal v-model="editModal" title="Edit Tag" :mask-closable="false" :closable="false">
+                    <Input type="text" v-model="editData.tagName" placeholder="Edit Your tag" required />
+
+                    <div slot="footer">
+                        <Button type="default" @click="editModal = false">Close</Button>
+                        <Button type="primary" @click="editTag" :disabled="isAdding" :loadind="isAdding">{{ isAdding ?
+                            'Adding..' : 'update' }}</Button>
+                    </div>
+
+                </Modal>
+
+
+                <!-- Delete model modal -->
+                <Modal v-model="showDeleteModal" width="360">
+                    <p slot="header" style="color:#f60;text-align:center">
+                        <Icon type="ios-information-circle"></Icon>
+                        <span>Delete Confirmation</span>
+                    </p>
+                    <div style="text-align:center">
+                        <p>Are Sure You want to Delete tag?</p>
+
+                    </div>
+                    <div slot="footer">
+
+                        <Button type="error" size="large" long :loading="isDeleing" :disabled="isDeleing"
+                            @click="deleteTag"> Delete</Button>
+                    </div>
+
+                </Modal>
+
+
 
             </div>
         </div>
@@ -67,9 +104,18 @@ export default {
                 tagName: ''
             },
             addModal: false,
+            editModal: false,
             isAdding: false,
             // tag show
-            tags: []
+            tags: [],
+            editData: {
+                tagName: ''
+            },
+            index: -1,
+            showDeleteModal: false,
+            isDeleing: false,
+            deleteItem: {},
+            deletingIndex: -1
 
         };
     },
@@ -86,6 +132,52 @@ export default {
             } else {
                 this.swr()
             }
+        },
+
+
+        async editTag() {
+            if (this.editData.tagName.trim() == '') return this.e('Tag name is Reuired!')
+            const res = await this.callApi('post', 'app/edit_tag', this.editData)
+            if (res.status === 200) {
+                this.tags[this.index].tagName = this.editData.tagName
+                this.s('Tag has been edited successfully!')
+
+                this.editModal = false;
+
+            } else {
+                this.swr()
+            }
+        },
+        showEditData(tag, index) {
+            let obj = {
+                id: tag.id,
+                tagName: tag.tagName
+            }
+
+            this.editData = obj
+            this.editModal = true
+            this.index = index
+
+        },
+        async deleteTag() {
+            this.isDeleing = true
+            const res = await this.callApi('post', 'app/delete_tag', this.deleteItem)
+            if (res.status === 200) {
+                deletingIndex: -1
+                this.tags.splice(this.deletingIndex, 1)
+                this.s('Tag has been deleted successfully!')
+            } else {
+                this.swr()
+            }
+            this.isDeleing = false
+            this.showDeleteModal = false
+
+
+        },
+        showDeletingModal(tag, i) {
+            this.deleteItem = tag
+            this.deletingIndex = i
+            this.showDeleteModal = true
         }
     },
     async created() {

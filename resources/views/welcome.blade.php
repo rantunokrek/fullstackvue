@@ -7,7 +7,10 @@
         <title>Laravel</title>
 
         <!-- Fonts -->
-        <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@200;600&display=swap" rel="stylesheet">
+      
+        <link href="css/main.css" rel="stylesheet">
+        <link href="css/grid.min.css" rel="stylesheet">
+        <link href="css/all.css" rel="stylesheet">
 
         <!-- Styles -->
         <style>

@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TagController;
 
 /*
 |--------------------------------------------------------------------------
@@ -12,7 +13,6 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
 Route::get('/', function () {
     return view('welcome');
 });
@@ -22,4 +22,6 @@ Route::any('/{slug}', function () {
 
 Route::get('/test', 'TestController@test');
 Route::post('app/create_tag', 'TagController@create_tag');
+Route::post('app/edit_tag', 'TagController@edit_tag');
+Route::post('app/delete_tag', 'TagController@delete_tag');
 Route::get('app/get_tags', 'TagController@get_tag');

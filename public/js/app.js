@@ -1935,9 +1935,18 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         tagName: ''
       },
       addModal: false,
+      editModal: false,
       isAdding: false,
       // tag show
-      tags: []
+      tags: [],
+      editData: {
+        tagName: ''
+      },
+      index: -1,
+      showDeleteModal: false,
+      isDeleing: false,
+      deleteItem: {},
+      deletingIndex: -1
     };
   },
   methods: {
@@ -1973,29 +1982,102 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
           }
         }, _callee);
       }))();
+    },
+    editTag: function editTag() {
+      var _this2 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+        var res;
+        return _regeneratorRuntime().wrap(function _callee2$(_context2) {
+          while (1) switch (_context2.prev = _context2.next) {
+            case 0:
+              if (!(_this2.editData.tagName.trim() == '')) {
+                _context2.next = 2;
+                break;
+              }
+              return _context2.abrupt("return", _this2.e('Tag name is Reuired!'));
+            case 2:
+              _context2.next = 4;
+              return _this2.callApi('post', 'app/edit_tag', _this2.editData);
+            case 4:
+              res = _context2.sent;
+              if (res.status === 200) {
+                _this2.tags[_this2.index].tagName = _this2.editData.tagName;
+                _this2.s('Tag has been edited successfully!');
+                _this2.editModal = false;
+              } else {
+                _this2.swr();
+              }
+            case 6:
+            case "end":
+              return _context2.stop();
+          }
+        }, _callee2);
+      }))();
+    },
+    showEditData: function showEditData(tag, index) {
+      var obj = {
+        id: tag.id,
+        tagName: tag.tagName
+      };
+      this.editData = obj;
+      this.editModal = true;
+      this.index = index;
+    },
+    deleteTag: function deleteTag() {
+      var _this3 = this;
+      return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee3() {
+        var res;
+        return _regeneratorRuntime().wrap(function _callee3$(_context3) {
+          while (1) switch (_context3.prev = _context3.next) {
+            case 0:
+              _this3.isDeleing = true;
+              _context3.next = 3;
+              return _this3.callApi('post', 'app/delete_tag', _this3.deleteItem);
+            case 3:
+              res = _context3.sent;
+              if (res.status === 200) {
+                deletingIndex: -1;
+                _this3.tags.splice(_this3.deletingIndex, 1);
+                _this3.s('Tag has been deleted successfully!');
+              } else {
+                _this3.swr();
+              }
+              _this3.isDeleing = false;
+              _this3.showDeleteModal = false;
+            case 7:
+            case "end":
+              return _context3.stop();
+          }
+        }, _callee3);
+      }))();
+    },
+    showDeletingModal: function showDeletingModal(tag, i) {
+      this.deleteItem = tag;
+      this.deletingIndex = i;
+      this.showDeleteModal = true;
     }
   },
   created: function created() {
-    var _this2 = this;
-    return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
+    var _this4 = this;
+    return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee4() {
       var res;
-      return _regeneratorRuntime().wrap(function _callee2$(_context2) {
-        while (1) switch (_context2.prev = _context2.next) {
+      return _regeneratorRuntime().wrap(function _callee4$(_context4) {
+        while (1) switch (_context4.prev = _context4.next) {
           case 0:
-            _context2.next = 2;
-            return _this2.callApi('get', 'app/get_tags');
+            _context4.next = 2;
+            return _this4.callApi('get', 'app/get_tags');
           case 2:
-            res = _context2.sent;
+            res = _context4.sent;
             if (res.status === 200) {
-              _this2.tags = res.data;
+              _this4.tags = res.data;
             } else {
-              _this2.swr();
+              _this4.swr();
             }
           case 4:
           case "end":
-            return _context2.stop();
+            return _context4.stop();
         }
-      }, _callee2);
+      }, _callee4);
     }))();
   } // components: { Icon }
 });
@@ -2487,14 +2569,33 @@ var render = function render() {
       key: i
     }, [_c("td", [_vm._v(_vm._s(tag.id))]), _vm._v(" "), _c("td", {
       staticClass: "_table_name"
-    }, [_vm._v(_vm._s(tag.tagName))]), _vm._v(" "), _c("td", {}, [_vm._v(_vm._s(tag.created_at))]), _vm._v(" "), _vm._m(1, true)]) : _vm._e();
+    }, [_vm._v(_vm._s(tag.tagName))]), _vm._v(" "), _c("td", {}, [_vm._v(_vm._s(tag.created_at))]), _vm._v(" "), _c("td", [_c("Button", {
+      attrs: {
+        type: "info",
+        size: "small"
+      },
+      on: {
+        click: function click($event) {
+          return _vm.showEditData(tag, i);
+        }
+      }
+    }, [_vm._v(" Edit ")]), _vm._v(" "), _c("Button", {
+      attrs: {
+        type: "error",
+        size: "small",
+        loading: tag.isDeleting
+      },
+      on: {
+        click: function click($event) {
+          return _vm.showDeletingModal(tag, i);
+        }
+      }
+    }, [_vm._v("Delete")])], 1)]) : _vm._e();
   })], 2)])]), _vm._v(" "), _c("Modal", {
     attrs: {
-      title: "Add Tag"
-    },
-    on: {
-      "on-ok": _vm.ok,
-      "on-cncel": _vm.cancel
+      title: "Add Tag",
+      "mask-closable": false,
+      closable: false
     },
     model: {
       value: _vm.addModal,
@@ -2506,7 +2607,8 @@ var render = function render() {
   }, [_c("Input", {
     attrs: {
       type: "text",
-      placeholder: "add Your tag"
+      placeholder: "add Your tag",
+      filed: "required"
     },
     model: {
       value: _vm.data.tagName,
@@ -2538,26 +2640,105 @@ var render = function render() {
     on: {
       click: _vm.addTag
     }
-  }, [_vm._v(_vm._s(_vm.isAdding ? "Adding.." : "Add tag"))])], 1)], 1)], 1)])]);
+  }, [_vm._v(_vm._s(_vm.isAdding ? "Adding.." : "Add tag"))])], 1)], 1), _vm._v(" "), _c("Modal", {
+    attrs: {
+      title: "Edit Tag",
+      "mask-closable": false,
+      closable: false
+    },
+    model: {
+      value: _vm.editModal,
+      callback: function callback($$v) {
+        _vm.editModal = $$v;
+      },
+      expression: "editModal"
+    }
+  }, [_c("Input", {
+    attrs: {
+      type: "text",
+      placeholder: "Edit Your tag",
+      required: ""
+    },
+    model: {
+      value: _vm.editData.tagName,
+      callback: function callback($$v) {
+        _vm.$set(_vm.editData, "tagName", $$v);
+      },
+      expression: "editData.tagName"
+    }
+  }), _vm._v(" "), _c("div", {
+    attrs: {
+      slot: "footer"
+    },
+    slot: "footer"
+  }, [_c("Button", {
+    attrs: {
+      type: "default"
+    },
+    on: {
+      click: function click($event) {
+        _vm.editModal = false;
+      }
+    }
+  }, [_vm._v("Close")]), _vm._v(" "), _c("Button", {
+    attrs: {
+      type: "primary",
+      disabled: _vm.isAdding,
+      loadind: _vm.isAdding
+    },
+    on: {
+      click: _vm.editTag
+    }
+  }, [_vm._v(_vm._s(_vm.isAdding ? "Adding.." : "update"))])], 1)], 1), _vm._v(" "), _c("Modal", {
+    attrs: {
+      width: "360"
+    },
+    model: {
+      value: _vm.showDeleteModal,
+      callback: function callback($$v) {
+        _vm.showDeleteModal = $$v;
+      },
+      expression: "showDeleteModal"
+    }
+  }, [_c("p", {
+    staticStyle: {
+      color: "#f60",
+      "text-align": "center"
+    },
+    attrs: {
+      slot: "header"
+    },
+    slot: "header"
+  }, [_c("Icon", {
+    attrs: {
+      type: "ios-information-circle"
+    }
+  }), _vm._v(" "), _c("span", [_vm._v("Delete Confirmation")])], 1), _vm._v(" "), _c("div", {
+    staticStyle: {
+      "text-align": "center"
+    }
+  }, [_c("p", [_vm._v("Are Sure You want to Delete tag?")])]), _vm._v(" "), _c("div", {
+    attrs: {
+      slot: "footer"
+    },
+    slot: "footer"
+  }, [_c("Button", {
+    attrs: {
+      type: "error",
+      size: "large",
+      "long": "",
+      loading: _vm.isDeleing,
+      disabled: _vm.isDeleing
+    },
+    on: {
+      click: _vm.deleteTag
+    }
+  }, [_vm._v(" Delete")])], 1)])], 1)])]);
 };
 var staticRenderFns = [function () {
   var _vm = this,
     _c = _vm._self._c;
   return _c("tr", [_c("th", [_vm._v("Id")]), _vm._v(" "), _c("th", [_vm._v("Tag Name")]), _vm._v(" "), _c("th", [_vm._v("Created Time")]), _vm._v(" "), _c("th", [_vm._v("Action")])]);
-}, function () {
-  var _vm = this,
-    _c = _vm._self._c;
-  return _c("td", [_c("button", {
-    staticClass: "_btn _action_btn view_btn1",
-    attrs: {
-      type: "button"
-    }
-  }, [_vm._v("View")]), _vm._v(" "), _c("button", {
-    staticClass: "_btn _action_btn make_btn1",
-    attrs: {
-      type: "button"
-    }
-  }, [_vm._v("Delete")])]);
 }];
 render._withStripped = true;
 
@@ -98155,15 +98336,14 @@ __webpack_require__.r(__webpack_exports__);
 /*!****************************************************!*\
   !*** ./resources/js/components/pages/AdminTag.vue ***!
   \****************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _AdminTag_vue_vue_type_template_id_596b73e1___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AdminTag.vue?vue&type=template&id=596b73e1& */ "./resources/js/components/pages/AdminTag.vue?vue&type=template&id=596b73e1&");
 /* harmony import */ var _AdminTag_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AdminTag.vue?vue&type=script&lang=js& */ "./resources/js/components/pages/AdminTag.vue?vue&type=script&lang=js&");
-/* harmony reexport (unknown) */ for(var __WEBPACK_IMPORT_KEY__ in _AdminTag_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__) if(["default"].indexOf(__WEBPACK_IMPORT_KEY__) < 0) (function(key) { __webpack_require__.d(__webpack_exports__, key, function() { return _AdminTag_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__[key]; }) }(__WEBPACK_IMPORT_KEY__));
-/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* empty/unused harmony star reexport *//* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
 
@@ -98193,7 +98373,7 @@ component.options.__file = "resources/js/components/pages/AdminTag.vue"
 /*!*****************************************************************************!*\
   !*** ./resources/js/components/pages/AdminTag.vue?vue&type=script&lang=js& ***!
   \*****************************************************************************/
-/*! no static exports found */
+/*! exports provided: default */
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
