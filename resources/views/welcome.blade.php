@@ -13,10 +13,17 @@
         <link href="css/all.css" rel="stylesheet">
 
         <!-- Styles -->
-        <style>
-    
+        <style>   </style>
+        <script>
+            (function(){
+                window.Laravel = {
+                    csrfToken: '{{ csrf_token()}}'
+                };
+            })();
+        </script>
 
-        </style>
+
+
     </head>
     <body>
     <div id="app">
