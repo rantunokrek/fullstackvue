@@ -121,7 +121,12 @@ public function delete_category(Request $request){
 public function createUser(Request $request)
 {
     // validate request
-
+    $this->validate($request, [
+        'fullname' => 'required',
+        'email' => 'bail|required|email|unique:users',
+        'password' => 'bail|required|min:6',
+       
+    ]);
     $password = bcrypt($request->password);
     $user = User::create([
         'fullname' => $request->fullname,
@@ -136,6 +141,30 @@ public function getUsers()
 {
     return User::get();
 }
+
+
+public function editUser(Request $request)
+{
+    // validate request
+    $this->validate($request, [
+        'fullname' => 'required',
+        'email' => "bail|required|email|unique:users,email,$request->id",
+        'password' => 'min:6',
+        'userType' => 'required',
+    ]);
+    $data = [
+        'fullname' => $request->fullname,
+        'email' => $request->email,
+        'userType' => $request->userType,
+    ];
+    if ($request->password) {
+        $password = bcrypt($request->password);
+        $data['password'] = $password;
+    }
+    $user = User::where('id', $request->id)->update($data);
+    return $user;
+}
+
 
 
 

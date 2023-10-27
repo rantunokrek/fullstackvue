@@ -1998,7 +1998,10 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       isAdding: false,
       users: [],
       editData: {
-        tagName: ''
+        fullname: '',
+        email: '',
+        password: '',
+        userType: ''
       },
       index: -1,
       showDeleteModal: false,
@@ -2064,47 +2067,61 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         }, _callee);
       }))();
     },
-    editTag: function editTag() {
+    editAdmin: function editAdmin() {
       var _this2 = this;
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
-        var res;
+        var res, i;
         return _regeneratorRuntime().wrap(function _callee2$(_context2) {
           while (1) switch (_context2.prev = _context2.next) {
             case 0:
-              if (!(_this2.editData.tagName.trim() == '')) {
+              if (!(_this2.editData.fullname.trim() == '')) {
                 _context2.next = 2;
                 break;
               }
-              return _context2.abrupt("return", _this2.e('Tag name is required'));
+              return _context2.abrupt("return", _this2.e('fullname name is required'));
             case 2:
-              _context2.next = 4;
-              return _this2.callApi('post', 'app/edit_tag', _this2.editData);
+              if (!(_this2.editData.email.trim() == '')) {
+                _context2.next = 4;
+                break;
+              }
+              return _context2.abrupt("return", _this2.e('Eamail name is required'));
             case 4:
+              if (!(_this2.editData.userType.trim() == '')) {
+                _context2.next = 6;
+                break;
+              }
+              return _context2.abrupt("return", _this2.e('userType name is required'));
+            case 6:
+              _context2.next = 8;
+              return _this2.callApi('post', 'app/edit_users', _this2.editData);
+            case 8:
               res = _context2.sent;
               if (res.status === 200) {
-                _this2.users[_this2.index].tagName = _this2.editData.tagName;
-                _this2.s('Tag has been edited successfully!');
+                _this2.users[_this2.index] = _this2.editData;
+                _this2.s('User has been edited successfully!');
                 _this2.editModal = false;
               } else {
                 if (res.status == 422) {
-                  if (res.data.errors.tagName) {
-                    _this2.e(res.data.errors.tagName[0]);
+                  for (i in res.data.errors) {
+                    _this2.e(res.data.errors[i][0]);
                   }
                 } else {
                   _this2.swr();
                 }
               }
-            case 6:
+            case 10:
             case "end":
               return _context2.stop();
           }
         }, _callee2);
       }))();
     },
-    showEditModal: function showEditModal(tag, index) {
+    showEditModal: function showEditModal(user, index) {
       var obj = {
-        id: tag.id,
-        tagName: tag.tagName
+        id: user.id,
+        fullname: user.fullname,
+        email: user.email,
+        userType: user.userType
       };
       this.editData = obj;
       this.editModal = true;
@@ -3019,7 +3036,7 @@ var render = function render() {
     }
   }, [_vm._v(_vm._s(_vm.isAdding ? "Adding.." : "Add User"))])], 1)]), _vm._v(" "), _c("Modal", {
     attrs: {
-      title: "Edit Tag",
+      title: "Edit Admin",
       "mask-closable": false,
       closable: false
     },
@@ -3030,20 +3047,70 @@ var render = function render() {
       },
       expression: "editModal"
     }
+  }, [_c("div", {
+    staticClass: "space"
   }, [_c("Input", {
     attrs: {
       type: "text",
-      placeholder: "Edit Your tag",
-      required: ""
+      placeholder: "Full name"
     },
     model: {
-      value: _vm.editData.tagName,
+      value: _vm.editData.fullname,
       callback: function callback($$v) {
-        _vm.$set(_vm.editData, "tagName", $$v);
+        _vm.$set(_vm.editData, "fullname", $$v);
       },
-      expression: "editData.tagName"
+      expression: "editData.fullname"
     }
-  }), _vm._v(" "), _c("div", {
+  })], 1), _vm._v(" "), _c("div", {
+    staticClass: "space"
+  }, [_c("Input", {
+    attrs: {
+      type: "email",
+      placeholder: "Email"
+    },
+    model: {
+      value: _vm.editData.email,
+      callback: function callback($$v) {
+        _vm.$set(_vm.editData, "email", $$v);
+      },
+      expression: "editData.email"
+    }
+  })], 1), _vm._v(" "), _c("div", {
+    staticClass: "space"
+  }, [_c("Input", {
+    attrs: {
+      type: "password",
+      placeholder: "Password"
+    },
+    model: {
+      value: _vm.editData.password,
+      callback: function callback($$v) {
+        _vm.$set(_vm.editData, "password", $$v);
+      },
+      expression: "editData.password"
+    }
+  })], 1), _vm._v(" "), _c("div", {
+    staticClass: "space"
+  }, [_c("Select", {
+    attrs: {
+      placeholder: "Select admin type"
+    },
+    model: {
+      value: _vm.editData.userType,
+      callback: function callback($$v) {
+        _vm.$set(_vm.editData, "userType", $$v);
+      },
+      expression: "editData.userType"
+    }
+  }, [_c("Option", {
+    attrs: {
+      value: "Admin"
+    }
+  }, [_vm._v("Admin")]), _vm._v(" "), _c("Option", {
+    attrs: {
+      value: "Editor"
+    }
+  }, [_vm._v("Editor")])], 1)], 1), _vm._v(" "), _c("div", {
     attrs: {
       slot: "footer"
     },
@@ -3061,12 +3128,12 @@ var render = function render() {
     attrs: {
       type: "primary",
       disabled: _vm.isAdding,
-      loadind: _vm.isAdding
+      loading: _vm.isAdding
     },
     on: {
-      click: _vm.editTag
+      click: _vm.editAdmin
     }
-  }, [_vm._v(_vm._s(_vm.isAdding ? "Adding.." : "update"))])], 1)], 1), _vm._v(" "), _c("deleteModal")], 1)])]);
+  }, [_vm._v(_vm._s(_vm.isAdding ? "Editing.." : "Edit Admin"))])], 1)]), _vm._v(" "), _c("deleteModal")], 1)])]);
 };
 var staticRenderFns = [function () {
   var _vm = this,

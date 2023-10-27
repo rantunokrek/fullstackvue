@@ -37,7 +37,7 @@ Route::get('app/get_category', 'TagController@get_category');
 
 Route::post('app/create_user', 'TagController@createUser');
 Route::get('app/get_users', 'TagController@getUsers');
-Route::post('app/edit_user', 'TagController@editUser');
+Route::post('app/edit_users', 'TagController@editUser');
 
 
 //  roles routes
