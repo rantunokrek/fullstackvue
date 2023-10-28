@@ -6,6 +6,7 @@ use App\Tag;
 use App\User;
 use App\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class TagController extends Controller
 {
@@ -165,10 +166,24 @@ public function editUser(Request $request)
     return $user;
 }
 
+// user login here start
+public function login_User(Request $request){
+  $this->validate($request, [
+    'email' => 'required',
+    'password' => 'bail|required|min:6',
+    
+]);
+if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
+ return response()->json([
+  'msg' => 'You are Logged in',
+ ]);
+}else{
+  return response()->json([
+    'msg' => 'Incorrect login details',
+   ], 401);
+}
 
-
-
-// end admin_index   fullname	email	password	userType	
+}
 
 
 

@@ -39,6 +39,9 @@ Route::post('app/create_user', 'TagController@createUser');
 Route::get('app/get_users', 'TagController@getUsers');
 Route::post('app/edit_users', 'TagController@editUser');
 
+// login
+Route::post('app/admin_login', 'TagController@login_User');
+
 
 //  roles routes
 
