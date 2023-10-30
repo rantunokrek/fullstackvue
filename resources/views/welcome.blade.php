@@ -27,9 +27,13 @@
     </head>
     <body>
     <div id="app">
-    <h1>This is welcome page</h1>
+       @if (Auth::check())
+       <main-app :user="{{Auth::user()}}"></main-app>  
+       @else
+       <main-app :user="false"></main-app>  
+       @endif
   
-     <main-app></main-app>
+     
     
     </div>
     </body>

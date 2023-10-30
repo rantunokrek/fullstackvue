@@ -1991,7 +1991,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
         fullname: '',
         email: '',
         password: '',
-        userType: 'Admin'
+        userType: ''
       },
       addModal: false,
       editModal: false,
@@ -2782,7 +2782,17 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony default export */ __webpack_exports__["default"] = ({});
+/* harmony default export */ __webpack_exports__["default"] = ({
+  props: ['user'],
+  data: function data() {
+    return {
+      isLoggedIn: false
+    };
+  },
+  created: function created() {
+    this.$store.commit('updateUser', this.user);
+  }
+});
 
 /***/ }),
 
@@ -3706,7 +3716,7 @@ __webpack_require__.r(__webpack_exports__);
 var render = function render() {
   var _vm = this,
     _c = _vm._self._c;
-  return _c("div", [_c("div", [_c("div", {
+  return _c("div", [_vm.$store.state.user ? _c("div", [_c("div", {
     staticClass: "_1side_menu"
   }, [_vm._m(0), _vm._v(" "), _c("div", {
     staticClass: "_1side_menu_content"
@@ -3766,14 +3776,6 @@ var render = function render() {
     }
   }), _vm._v(" Assign role\n              ")], 1)], 1), _vm._v(" "), _c("li", [_c("a", {
     attrs: {
-      href: "/login"
-    }
-  }, [_c("Icon", {
-    attrs: {
-      type: "ios-speedometer"
-    }
-  }), _vm._v(" Login\n              ")], 1)]), _vm._v(" "), _c("li", [_c("a", {
-    attrs: {
       href: "/logout"
     }
   }, [_c("Icon", {
@@ -3792,7 +3794,7 @@ var render = function render() {
     attrs: {
       type: "ios-list"
     }
-  })], 1)])])])])]), _vm._v(" "), _c("router-view")], 1);
+  })], 1)])])])])]) : _vm._e(), _vm._v(" "), _c("router-view")], 1);
 };
 var staticRenderFns = [function () {
   var _vm = this,
@@ -101503,7 +101505,7 @@ vue__WEBPACK_IMPORTED_MODULE_0___default.a.use(vuex__WEBPACK_IMPORTED_MODULE_1__
     setDeletingModalObj: function setDeletingModalObj(state, data) {
       state.deleteModalObj = data;
     },
-    setUpdateUser: function setUpdateUser(state, data) {
+    updateUser: function updateUser(state, data) {
       state.user = data;
     },
     setUserPermission: function setUserPermission(state, data) {

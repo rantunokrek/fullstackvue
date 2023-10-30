@@ -143,7 +143,7 @@ export default {
 				fullname: '',
 				email: '',
 				password: '',
-				userType: 'Admin'
+				userType: ''
 
 			},
 			addModal: false,

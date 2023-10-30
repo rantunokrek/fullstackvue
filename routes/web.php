@@ -13,12 +13,19 @@ use App\Http\Controllers\TagController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/', function () {
-    return view('welcome');
-});
-Route::any('/{slug}', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+// Route::any('/{slug}', function () {
+//     return view('welcome');
+// });
+
+
+Route::get('/logout', 'TagController@logout');
+Route::get('/', 'TagController@index');
+Route::any('{slug}', 'TagController@index');
+
+
 
 Route::get('/test', 'TestController@test');
 Route::post('app/create_tag', 'TagController@create_tag');
@@ -41,6 +48,8 @@ Route::post('app/edit_users', 'TagController@editUser');
 
 // login
 Route::post('app/admin_login', 'TagController@login_User');
+
+
 
 
 //  roles routes
