@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Middleware\AdminCheck;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\TagController;
 
@@ -26,28 +27,28 @@ Route::get('/', 'TagController@index');
 Route::any('{slug}', 'TagController@index');
 
 
-
-Route::get('/test', 'TestController@test');
-Route::post('app/create_tag', 'TagController@create_tag');
-Route::post('app/edit_tag', 'TagController@edit_tag');
-Route::post('app/delete_tag', 'TagController@delete_tag');
-Route::get('app/get_tags', 'TagController@get_tag');
-Route::post('app/upload', 'TagController@uploadFile');
-Route::post('app/delete_image', 'TagController@delete_image');
-
+Route::prefix('app')->middleware([AdminCheck::class])->group(function(){
+     Route::post('/create_tag', 'TagController@create_tag');
+Route::post('/edit_tag', 'TagController@edit_tag');
+Route::post('/delete_tag', 'TagController@delete_tag');
+Route::get('/get_tags', 'TagController@get_tag');
+Route::post('/upload', 'TagController@uploadFile');
+Route::post('/delete_image', 'TagController@delete_image');
 // category
-Route::post('app/create_category', 'TagController@create_category');
-Route::post('app/edit_category', 'TagController@edit_category');
-Route::post('app/delete_category', 'TagController@delete_category');
-Route::get('app/get_category', 'TagController@get_category');
-
-
-Route::post('app/create_user', 'TagController@createUser');
-Route::get('app/get_users', 'TagController@getUsers');
-Route::post('app/edit_users', 'TagController@editUser');
-
+Route::post('/create_category', 'TagController@create_category');
+Route::post('/edit_category', 'TagController@edit_category');
+Route::post('/delete_category', 'TagController@delete_category');
+Route::get('/get_category', 'TagController@get_category');
+//user
+Route::post('/create_user', 'TagController@createUser');
+Route::get('/get_users', 'TagController@getUsers');
+Route::post('/edit_users', 'TagController@editUser');
 // login
-Route::post('app/admin_login', 'TagController@login_User');
+Route::post('/admin_login', 'TagController@login_User');
+
+
+
+});
 
 
 
