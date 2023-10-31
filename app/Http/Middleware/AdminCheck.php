@@ -16,11 +16,14 @@ class AdminCheck
      */
     public function handle($request, Closure $next)
     {
-       
+       if($request->path() == 'app/admin_login'){
+        return $next($request);
+       }
         if (!Auth::check()) {
           return response()->json([
-            'msg' => 'A message from middle'
-          ]);
+            'msg' => 'A message from middle',
+            'url' => $request->path()
+          ], 403);
         }$user = Auth::user();
         if ($user->userType=='User') {
             return response()->json([
