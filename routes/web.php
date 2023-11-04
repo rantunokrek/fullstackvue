@@ -44,7 +44,13 @@ Route::post('/create_user', 'TagController@createUser');
 Route::get('/get_users', 'TagController@getUsers');
 Route::post('/edit_users', 'TagController@editUser');
 // login
-Route::post('/admin_login', 'TagController@login_User');
+Route::post('/admin_login', 'TagController@admin_login');
+//roles add
+Route::post('/create_role', 'TagController@addRole');
+Route::get('/get_roles', 'TagController@getRoles');
+Route::post('/edit_role', 'TagController@editRole');
+//Assign Roll
+Route::post('/assign_roles', 'TagController@assignRoll');
 
 
 

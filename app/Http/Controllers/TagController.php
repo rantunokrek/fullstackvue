@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Tag;
+use App\Role;
 use App\User;
 use App\Category;
 use Illuminate\Http\Request;
@@ -26,9 +27,9 @@ class TagController extends Controller
       }
       // you are already logged in... so check for if you are an admin user..
       $user = Auth::user();
-      if ($user->userType == 'User') {
-          return redirect('/login');
-      }
+    //   if ($user->userType == 'User') {
+    //       return redirect('/login');
+    //   }
       if ($request->path() == 'login') {
           return redirect('/');
       }
@@ -161,6 +162,7 @@ public function createUser(Request $request)
         'fullname' => 'required',
         'email' => 'bail|required|email|unique:users',
         'password' => 'bail|required|min:6',
+        'role_id' => 'required',
        
     ]);
     $password = bcrypt($request->password);
@@ -168,7 +170,7 @@ public function createUser(Request $request)
         'fullname' => $request->fullname,
         'email' => $request->email,
         'password' => $password,
-         'userType' => $request->userType
+         'role_id' => $request->role_id
     ]);
     return $user;
 }
@@ -186,12 +188,12 @@ public function editUser(Request $request)
         'fullname' => 'required',
         'email' => "bail|required|email|unique:users,email,$request->id",
         'password' => 'min:6',
-        'userType' => 'required',
+        'role_id' => 'required',
     ]);
     $data = [
         'fullname' => $request->fullname,
         'email' => $request->email,
-        'userType' => $request->userType,
+        'role_id' => $request->role_id
     ];
     if ($request->password) {
         $password = bcrypt($request->password);
@@ -202,32 +204,74 @@ public function editUser(Request $request)
 }
 
 // user login here start
-public function login_User(Request $request){
-  $this->validate($request, [
-    'email' => 'required',
+public function admin_login(Request $request){
+   // validate request
+   $this->validate($request, [
+    'email' => 'bail|required|email',
     'password' => 'bail|required|min:6',
-    
 ]);
 if (Auth::attempt(['email' => $request->email, 'password' => $request->password])) {
-  $user = Auth::User();
-  if ($user->userType == 'User') {
-    Auth::logout();
+    $user = Auth::user();
+    if ($user->role->isAdmin == 0) {
+        Auth::logout();
+        return response()->json([
+            'msg' => 'Incorrect login details',
+        ], 401);
+    }
     return response()->json([
-      'msg' => 'Incorrect login details',
-     ], 401);
-  }
- return response()->json([
-  'msg' => 'You are Logged in',
- ]);
-}else{
-  return response()->json([
-    'msg' => 'Incorrect login details',
-   ], 401);
+        'msg' => 'You are logged in',
+        'user' => $user,
+    ]);
+} else {
+    return response()->json([
+        'msg' => 'Incorrect login details',
+    ], 401);
 }
 
 }
 
+ // Role add line
+ public function addRole(Request $request)
+    {
+        // validate request
+        $this->validate($request, [
+            'roleName' => 'required',
+            'isAdmin' => nullabled,
+          
+        ]);
+        return Role::create([
+            'roleName' => $request->roleName,
+        ]);
+    }
+    public function editRole(Request $request)
+    {
+        // validate request
+        $this->validate($request, [
+            'roleName' => 'required',
+        ]);
+        return Role::where('id', $request->id)->update([
+            'roleName' => $request->roleName,
+        ]);
+    }
+    public function getRoles()
+    {
+        return Role::all();
+    }
 
+// Assign Roll
+      public function assignRoll(Request $request)
+    {
+        $this->validate($request, [
+            'permission' => 'required',
+            'id' => 'required',
+        ]);
+        return Role::where('id', $request->id)->update([
+            'permission' => $request->permission
+        ]);
+    }
+
+
+    
 
 
 

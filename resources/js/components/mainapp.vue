@@ -25,10 +25,10 @@
               </li>
 
 
-              <li><router-link :to="{ name: 'tag-url' }">
+              <li><router-link :to="{ name: 'tag' }">
                   <Icon type="ios-speedometer" /> Tags
                 </router-link></li>
-              <li><router-link :to="{ name: 'category-url' }">
+              <li><router-link :to="{ name: 'category' }">
                   <Icon type="ios-speedometer" /> Category
                 </router-link></li>
               <li><router-link :to="{ name: 'adminusers' }">
@@ -38,10 +38,9 @@
               <li><router-link to="role">
                   <Icon type="ios-speedometer" /> Role Management
                 </router-link></li>
-              <li><router-link to="assignRole">
-                  <Icon type="ios-speedometer" /> Assign role
+              <li><router-link to="assignrole">
+                  <Icon type="ios-speedometer" /> Role Assignment
                 </router-link></li>
-
 
               <li><a href="/logout">
                   <Icon type="ios-speedometer" /> Logout

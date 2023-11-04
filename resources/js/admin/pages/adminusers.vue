@@ -6,7 +6,7 @@
 				<!--~~~~~~~ TABLE ONE ~~~~~~~~~-->
 				<div class="_1adminOverveiw_table_recent _box_shadow _border_radious _mar_b30 _p20">
 					<p class="_title0">Admin <Button @click="addModal = true">
-							<Icon type="md-add" />Add User
+							<Icon type="md-add" /> Add admin
 						</Button></p>
 
 					<div class="_overflow _table_div">
@@ -26,7 +26,7 @@
 							<!-- ITEMS -->
 							<tr v-for="(user, i) in users" :key="i" v-if="users.length">
 								<td>{{ user.id }}</td>
-								<td class="_table_name">{{ user.fullName }}</td>
+								<td class="_table_name">{{ user.fullname }}</td>
 								<td class="">{{ user.email }}</td>
 								<td class="">{{ user.userType }}</td>
 								<td>{{ user.created_at }}</td>
@@ -38,16 +38,13 @@
 								</td>
 							</tr>
 							<!-- ITEMS -->
-
-
-							<!-- ITEMS -->
-
-
 						</table>
 					</div>
 				</div>
-				<!-- add model modal -->
-				<Modal v-model="addModal" title="Add Tag" :mask-closable="false" :closable="false">
+
+
+				<!-- tag adding modal -->
+				<Modal v-model="addModal" title="Add admin" :mask-closable="false" :closable="false">
 					<div class="space">
 						<Input type="text" v-model="data.fullname" placeholder="Full name" />
 					</div>
@@ -58,25 +55,25 @@
 						<Input type="password" v-model="data.password" placeholder="Password" />
 					</div>
 					<div class="space">
-						<Select v-model="data.userType" placeholder="Select admin type">
-							<Option value="Admin"> Admin
+						<Select v-model="data.role_id" placeholder="Select admin type">
+							<Option :value="r.id" v-for="(r, i) in roles" :key="i" v-if="roles.length">{{ r.roleName
+							}}
 							</Option>
-							<Option value="Editor">Editor</Option>
+							<!-- <Option value="Editor" >Editor</Option> -->
 						</Select>
 					</div>
 
 
+
+
 					<div slot="footer">
 						<Button type="default" @click="addModal = false">Close</Button>
-						<Button type="primary" @click="addAdmin" :disabled="isAdding" :loadind="isAdding">{{ isAdding ?
-							'Adding..' : 'Add User' }}</Button>
+						<Button type="primary" @click="addAdmin" :disabled="isAdding" :loading="isAdding">{{ isAdding ?
+							'Adding..' : 'Add admin' }}</Button>
 					</div>
 
 				</Modal>
-
-
-				<!-- Edit user modal -->
-
+				<!-- tag editing modal -->
 				<Modal v-model="editModal" title="Edit Admin" :mask-closable="false" :closable="false">
 					<div class="space">
 						<Input type="text" v-model="editData.fullname" placeholder="Full name" />
@@ -88,7 +85,7 @@
 						<Input type="password" v-model="editData.password" placeholder="Password" />
 					</div>
 					<div class="space">
-						<Select v-model="editData.userType" placeholder="Select admin type">
+						<Select v-model="editData.role_id" placeholder="Select admin type">
 							<Option value="Admin">Admin</Option>
 							<Option value="Editor">Editor</Option>
 						</Select>
@@ -105,33 +102,27 @@
 					</div>
 
 				</Modal>
-
-
-				<!-- Delete model modal -->
+				<!-- delete alert modal -->
 				<!-- <Modal v-model="showDeleteModal" width="360">
-				 <p slot="header" style="color:#f60;text-align:center">
-					<Icon type="ios-information-circle"></Icon>
-					<span>Delete Confirmation</span>
-				 </p>
-				 <div style="text-align:center">
-					<p>Are Sure You want to Delete tag?</p>
- 
-				 </div>
-				 <div slot="footer">
- 
-					<Button type="error" size="large" long :loading="isDeleing" :disabled="isDeleing"
-					    @click="deleteTag"> Delete</Button>
-				 </div>
- 
-			  </Modal> -->
+					 <p slot="header" style="color:#f60;text-align:center">
+						 <Icon type="ios-information-circle"></Icon>
+						 <span>Delete confirmation</span>
+					 </p>
+					 <div style="text-align:center">
+						 <p>Are you sure you want to delete tag?.</p>
+						 
+					 </div>
+					 <div slot="footer">
+						 <Button type="error" size="large" long :loading="isDeleing" :disabled="isDeleing" @click="deleteTag" >Delete</Button>
+					 </div>
+				 </Modal> -->
 				<deleteModal></deleteModal>
-
-
 
 			</div>
 		</div>
 	</div>
 </template>
+ 
  
 <script>
 import deleteModal from '../components/deleteModal.vue'
@@ -143,42 +134,41 @@ export default {
 				fullname: '',
 				email: '',
 				password: '',
-				userType: ''
-
+				role_id: null
 			},
 			addModal: false,
 			editModal: false,
 			isAdding: false,
 			users: [],
 			editData: {
-				fullname: '',
-				email: '',
-				password: '',
-				userType: ''
+				tagName: ''
 			},
 			index: -1,
 			showDeleteModal: false,
 			isDeleing: false,
 			deleteItem: {},
 			deletingIndex: -1,
-			websiteSettings: []
+			websiteSettings: [],
+			roles: []
 
 		}
 	},
 
 	methods: {
 		async addAdmin() {
-			if (this.data.fullname.trim() == '') return this.e('fullname name is required')
-			if (this.data.email.trim() == '') return this.e('Eamail name is required')
-			if (this.data.password.trim() == '') return this.e('Pass name is required')
-			if (this.data.userType.trim() == '') return this.e('userType name is required')
+			if (this.data.fullname.trim() == '') return this.e('Full name is required')
+			if (this.data.email.trim() == '') return this.e('Email is required')
+			if (this.data.password.trim() == '') return this.e('Password is required')
+			console.log(this.data.role_id);
+			if (!this.data.role_id) return this.e('User type  is required')
+
 			const res = await this.callApi('post', 'app/create_user', this.data)
 			if (res.status === 201) {
 				this.users.unshift(res.data)
-				this.s('Admin User  added successfully!')
+				this.s('Admin user has been added successfully!')
 				this.addModal = false
 				this.data.tagName = ''
-			} {
+			} else {
 				if (res.status == 422) {
 					for (let i in res.data.errors) {
 						this.e(res.data.errors[i][0])
@@ -191,10 +181,10 @@ export default {
 
 		},
 		async editAdmin() {
-			if (this.editData.fullname.trim() == '') return this.e('fullname name is required')
-			if (this.editData.email.trim() == '') return this.e('Eamail name is required')
-			if (this.editData.userType.trim() == '') return this.e('userType name is required')
-			const res = await this.callApi('post', 'app/edit_users', this.editData)
+			if (this.editData.fullname.trim() == '') return this.e('Full name is required')
+			if (this.editData.email.trim() == '') return this.e('Email is required')
+			if (!this.editData.role_id) return this.e('User type  is required')
+			const res = await this.callApi('post', 'app/edit_user', this.editData)
 			if (res.status === 200) {
 				this.users[this.index] = this.editData
 				this.s('User has been edited successfully!')
@@ -218,7 +208,7 @@ export default {
 				id: user.id,
 				fullname: user.fullname,
 				email: user.email,
-				userType: user.userType,
+				// userType: user.userType,
 			}
 			this.editData = obj
 			this.editModal = true
@@ -228,7 +218,7 @@ export default {
 			this.isDeleing = true
 			const res = await this.callApi('post', 'app/delete_tag', this.deleteItem)
 			if (res.status === 200) {
-				this.users.splice(this.deletingIndex, 1)
+				this.tags.splice(this.deletingIndex, 1)
 				this.s('Tag has been deleted successfully!')
 			} else {
 				this.swr()
@@ -255,9 +245,17 @@ export default {
 	},
 
 	async created() {
-		const res = await this.callApi('get', 'app/get_users')
+		const [res, resRole] = await Promise.all([
+			this.callApi('get', 'app/get_users'),
+			this.callApi('get', 'app/get_roles')
+		])
 		if (res.status == 200) {
 			this.users = res.data
+		} else {
+			this.swr()
+		}
+		if (resRole.status == 200) {
+			this.roles = resRole.data
 		} else {
 			this.swr()
 		}
@@ -271,7 +269,7 @@ export default {
 	watch: {
 		getDeleteModalObj(obj) {
 			if (obj.isDeleted) {
-				this.users.splice(obj.deletingIndex, 1)
+				this.tags.splice(obj.deletingIndex, 1)
 			}
 		}
 	}

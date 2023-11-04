@@ -25,7 +25,7 @@ class AdminCheck
             'url' => $request->path()
           ], 403);
         }$user = Auth::user();
-        if ($user->userType=='User') {
+        if ($user->role->isAdmin==0) {
             return response()->json([
               'msg' => 'You are not allowed to access this Route...'
             ]);
