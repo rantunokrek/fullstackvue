@@ -33,10 +33,27 @@ class TagController extends Controller
       if ($request->path() == 'login') {
           return redirect('/');
       }
+      return $this->checkForPermision($user, $request);
+    
       return view('welcome');
 
     
   }
+  public function checkForPermision($user, $request){
+    $permission = json_decode($user->role->permission);
+    $hasPermission = false;
+    foreach ($permission as $p) {
+       if ($p->name == $request->path()) {
+       if ($p->read) {
+       $hasPermission = true;
+       }
+       }
+    }
+    if ($hasPermission) return view('welcome') ;
+    return view('notfound');
+  }
+
+
   public function logout(Request $request){
      Auth::logout();
      return redirect('/login');
@@ -236,7 +253,7 @@ if (Auth::attempt(['email' => $request->email, 'password' => $request->password]
         // validate request
         $this->validate($request, [
             'roleName' => 'required',
-            'isAdmin' => nullabled,
+          
           
         ]);
         return Role::create([

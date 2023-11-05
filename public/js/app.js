@@ -2246,7 +2246,43 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
       roles: [],
       resources: [{
         resourceName: 'Tag',
-        read: true,
+        read: false,
+        write: false,
+        update: false,
+        "delete": false,
+        name: 'tag'
+      }, {
+        resourceName: 'Category',
+        read: false,
+        write: false,
+        update: false,
+        "delete": false,
+        name: 'category'
+      }, {
+        resourceName: 'Adminusers',
+        read: false,
+        write: false,
+        update: false,
+        "delete": false,
+        name: 'adminusers'
+      }, {
+        resourceName: 'Assignrole',
+        read: false,
+        write: false,
+        update: false,
+        "delete": false,
+        name: 'assignrole'
+      }, {
+        resourceName: 'Role',
+        read: false,
+        write: false,
+        update: false,
+        "delete": false,
+        name: 'role'
+      }],
+      defaultResources: [{
+        resourceName: 'Tag',
+        read: false,
         write: false,
         update: false,
         "delete": false,
@@ -2286,7 +2322,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
     assignRoles: function assignRoles() {
       var _this = this;
       return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee() {
-        var data, res;
+        var data, res, index;
         return _regeneratorRuntime().wrap(function _callee$(_context) {
           while (1) switch (_context.prev = _context.next) {
             case 0:
@@ -2300,42 +2336,57 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
               res = _context.sent;
               if (res.status == 200) {
                 _this.s('Role has been assigned successfully!');
-              }
-              if (res.data) {
-                _this.s('Role has been assigned successfully!');
+                index = _this.roles.findIndex(function (role) {
+                  return role.id == _this.data.id;
+                });
+                _this.roles[index].permission = data;
               } else {
                 _this.swr();
               }
-            case 6:
+            case 5:
             case "end":
               return _context.stop();
           }
         }, _callee);
       }))();
+    },
+    changeAdmin: function changeAdmin() {
+      var _this2 = this;
+      console.log(this.data.id);
+      var index = this.roles.findIndex(function (role) {
+        return role.id == _this2.data.id;
+      });
+      var permission = this.roles[index].permission;
+      console.log(permission);
+      if (!permission) {
+        this.resources = this.defaultResources;
+      } else {
+        this.resources = JSON.parse(permission);
+      }
     }
   },
   created: function created() {
-    var _this2 = this;
+    var _this3 = this;
     return _asyncToGenerator( /*#__PURE__*/_regeneratorRuntime().mark(function _callee2() {
       var res;
       return _regeneratorRuntime().wrap(function _callee2$(_context2) {
         while (1) switch (_context2.prev = _context2.next) {
           case 0:
-            console.log(_this2.$route);
+            console.log(_this3.$route);
             _context2.next = 3;
-            return _this2.callApi('get', 'app/get_roles');
+            return _this3.callApi('get', 'app/get_roles');
           case 3:
             res = _context2.sent;
             if (res.status == 200) {
-              _this2.roles = res.data;
+              _this3.roles = res.data;
               if (res.data.length) {
-                _this2.data.id = res.data[0].id;
+                _this3.data.id = res.data[0].id;
                 if (res.data[0].permission) {
-                  _this2.resources = JSON.parse(res.data[0].permission);
+                  _this3.resources = JSON.parse(res.data[0].permission);
                 }
               }
             } else {
-              _this2.swr();
+              _this3.swr();
             }
           case 5:
           case "end":
@@ -2768,7 +2819,7 @@ function _asyncToGenerator(fn) { return function () { var self = this, args = ar
             case 4:
               res = _context.sent;
               if (res.status === 201) {
-                _this.tags.unshift(res.data);
+                _this.roles.unshift(res.data);
                 _this.s('Role has been added successfully!');
                 _this.addModal = false;
                 _this.data.roleName = '';
@@ -3612,6 +3663,9 @@ var render = function render() {
     },
     attrs: {
       placeholder: "Select admin type"
+    },
+    on: {
+      "on-change": _vm.changeAdmin
     },
     model: {
       value: _vm.data.id,

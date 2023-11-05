@@ -6,7 +6,7 @@
         <div class="_1adminOverveiw_table_recent _box_shadow _border_radious _mar_b30 _p20">
           <p class="_title0">
             Role Manangement
-            <Select v-model="data.id" placeholder="Select admin type" style="width:300px">
+            <Select v-model="data.id" placeholder="Select admin type" style="width:300px" @on-change="changeAdmin">
               <Option :value="r.id" v-for="(r, i) in roles" :key="i" v-if="roles.length"> {{ r.roleName }}</Option>
             </Select>
           </p>
@@ -71,7 +71,16 @@ export default {
       roles: [],
       resources: [
 
-        { resourceName: 'Tag', read: true, write: false, update: false, delete: false, name: 'tag' },
+        { resourceName: 'Tag', read: false, write: false, update: false, delete: false, name: 'tag' },
+        { resourceName: 'Category', read: false, write: false, update: false, delete: false, name: 'category' },
+        { resourceName: 'Adminusers', read: false, write: false, update: false, delete: false, name: 'adminusers' },
+        { resourceName: 'Assignrole', read: false, write: false, update: false, delete: false, name: 'assignrole' },
+        { resourceName: 'Role', read: false, write: false, update: false, delete: false, name: 'role' }
+
+      ],
+      defaultResources: [
+
+        { resourceName: 'Tag', read: false, write: false, update: false, delete: false, name: 'tag' },
         { resourceName: 'Category', read: false, write: false, update: false, delete: false, name: 'category' },
         { resourceName: 'Adminusers', read: false, write: false, update: false, delete: false, name: 'adminusers' },
         { resourceName: 'Assignrole', read: false, write: false, update: false, delete: false, name: 'assignrole' },
@@ -88,12 +97,23 @@ export default {
 
       if (res.status == 200) {
         this.s('Role has been assigned successfully!')
-      }
-      if (res.data) {
-        this.s('Role has been assigned successfully!')
+        let index = this.roles.findIndex(role => role.id == this.data.id)
+        this.roles[index].permission = data
       }
       else {
         this.swr();
+      }
+    },
+    changeAdmin() {
+      console.log(this.data.id)
+      let index = this.roles.findIndex(role => role.id == this.data.id)
+      let permission = this.roles[index].permission
+      console.log(permission)
+      if (!permission) {
+
+        this.resources = this.defaultResources
+      } else {
+        this.resources = JSON.parse(permission)
       }
     }
   },
