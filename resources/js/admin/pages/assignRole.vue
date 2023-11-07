@@ -70,21 +70,23 @@ export default {
       isSending: false,
       roles: [],
       resources: [
-
+        { resourceName: 'Dashboard', read: false, write: false, update: false, delete: false, name: '/' },
         { resourceName: 'Tag', read: false, write: false, update: false, delete: false, name: 'tag' },
         { resourceName: 'Category', read: false, write: false, update: false, delete: false, name: 'category' },
-        { resourceName: 'Adminusers', read: false, write: false, update: false, delete: false, name: 'adminusers' },
-        { resourceName: 'Assignrole', read: false, write: false, update: false, delete: false, name: 'assignrole' },
-        { resourceName: 'Role', read: false, write: false, update: false, delete: false, name: 'role' }
+        { resourceName: 'Admin Users', read: false, write: false, update: false, delete: false, name: 'adminusers' },
+        { resourceName: 'Assign Role', read: false, write: false, update: false, delete: false, name: 'assignrole' },
+        { resourceName: 'Role', read: false, write: false, update: false, delete: false, name: 'role' },
+
 
       ],
       defaultResources: [
-
+        { resourceName: 'Dashboard', read: false, write: false, update: false, delete: false, name: '/' },
         { resourceName: 'Tag', read: false, write: false, update: false, delete: false, name: 'tag' },
         { resourceName: 'Category', read: false, write: false, update: false, delete: false, name: 'category' },
-        { resourceName: 'Adminusers', read: false, write: false, update: false, delete: false, name: 'adminusers' },
-        { resourceName: 'Assignrole', read: false, write: false, update: false, delete: false, name: 'assignrole' },
-        { resourceName: 'Role', read: false, write: false, update: false, delete: false, name: 'role' }
+        { resourceName: 'Admin Users', read: false, write: false, update: false, delete: false, name: 'adminusers' },
+        { resourceName: 'Assign Role', read: false, write: false, update: false, delete: false, name: 'assignrole' },
+        { resourceName: 'Role', read: false, write: false, update: false, delete: false, name: 'role' },
+
 
       ],
 

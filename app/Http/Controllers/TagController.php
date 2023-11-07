@@ -34,14 +34,13 @@ class TagController extends Controller
           return redirect('/');
       }
       return $this->checkForPermision($user, $request);
-    
-      return view('welcome');
-
+    //   return view('welcome');
     
   }
   public function checkForPermision($user, $request){
     $permission = json_decode($user->role->permission);
     $hasPermission = false;
+    if (!$permission) return view('welcome') ;
     foreach ($permission as $p) {
        if ($p->name == $request->path()) {
        if ($p->read) {

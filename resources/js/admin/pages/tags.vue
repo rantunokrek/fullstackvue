@@ -5,7 +5,7 @@
 
                 <!--~~~~~~~ TABLE ONE ~~~~~~~~~-->
                 <div class="_1adminOverveiw_table_recent _box_shadow _border_radious _mar_b30 _p20">
-                    <p class="_title0">Tag <Button @click="addModal = true">
+                    <p class="_title0">Tag <Button @click="addModal = true" v-if="isWritePermitted">
                             <Icon type="md-add" />Add tag
                         </Button></p>
 
@@ -29,10 +29,11 @@
 
                                 <td>
 
-                                    <Button type="info" size="small" @click="showEditModal(tag, i)"> Edit </Button>
+                                    <Button type="info" size="small" @click="showEditModal(tag, i)"
+                                        v-if="isUpdatePermitted"> Edit </Button>
 
                                     <Button type="error" size="small" @click="showDeletingModal(tag, i)"
-                                        :loading="tag.isDeleting">Delete</Button>
+                                        v-if="isDeletePermitted" :loading="tag.isDeleting">Delete</Button>
                                 </td>
                             </tr>
                             <!-- ITEMS -->

@@ -25,10 +25,12 @@
               </li>
 
 
-              <li><router-link :to="{ name: 'tag' }">
-                  <Icon type="ios-speedometer" /> Tags
-                </router-link></li>
-              <li><router-link :to="{ name: 'category' }">
+              <li v-for="(menuItem, i) in permission" :key="i" v-if="permission.length && menuItem.read">
+                <router-link :to="menuItem.name">
+                  <Icon type="ios-speedometer" /> {{ menuItem.resourceName }}
+                </router-link>
+              </li>
+              <!-- <li><router-link :to="{ name: 'category' }">
                   <Icon type="ios-speedometer" /> Category
                 </router-link></li>
               <li><router-link :to="{ name: 'adminusers' }">
@@ -44,7 +46,7 @@
 
               <li><a href="/logout">
                   <Icon type="ios-speedometer" /> Logout
-                </a></li>
+                </a></li> -->
             </ul>
           </div>
         </div>
@@ -74,7 +76,7 @@
 
 <script>
 export default {
-  props: ['user'],
+  props: ['user', 'permission'],
   data() {
 
     return {
@@ -82,7 +84,9 @@ export default {
     }
   },
   created() {
-    this.$store.commit('updateUser', this.user)
+    this.$store.commit('setUpdateUser', this.user)
+    this.$store.commit('setUserPermission', this.permission)
+
 
   }
 
